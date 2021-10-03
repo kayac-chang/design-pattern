@@ -1,8 +1,28 @@
-import './style.css'
+const $ = (id: string) => document.querySelector(id);
 
-const app = document.querySelector<HTMLDivElement>('#app')!
+interface Store<T> {
+  current: T;
+}
 
-app.innerHTML = `
-  <h1>Hello Vite!</h1>
-  <a href="https://vitejs.dev/guide/features.html" target="_blank">Documentation</a>
-`
+const timeStore = {
+  _current: new Date(),
+
+  set current(value: Date) {
+    this._current = value;
+
+    update($("time"), timeStore);
+  },
+  get current() {
+    return this._current;
+  },
+};
+
+setInterval(() => {
+  timeStore.current = new Date();
+}, 1000);
+
+function update(time: Element | null, state: Store<Date>) {
+  if (!time) return;
+
+  time.textContent = state.current.toUTCString();
+}
